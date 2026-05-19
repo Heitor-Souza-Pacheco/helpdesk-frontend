@@ -72,3 +72,20 @@ body {
     outline: none;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
 }
+
+.submit {
+    border: none;
+    background-color: #020024;
+    color: white;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    margin-top: 1rem;
+    border-radius: 15px;
+}
+
+.submit:hover {
+    transform: scale(1.05);
+    border: #020024 solid 0.5px;
+    background-color: transparent;
+    color: black;
+    transition: 0.3s
+}
