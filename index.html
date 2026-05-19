@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/pages/index/style.css">
     <title>Login in SistBank</title>
 </head>
 <body>
@@ -16,16 +16,19 @@
             <h2 class="descricao">Faça login na sua conta</h2>
             <div class="input">
                 <p class="label">Nome</p>
-                <input type="text" placeholder="Digite seu nome">
+                <input class="inputEntrada" type="text" placeholder="Digite seu nome">
             </div>
             <div class="input">
                 <p class="label">Senha</p>
-                <input type="password" placeholder="Digite sua senha" id="senha">
+                <input class="inputEntrada" type="password" placeholder="Digite sua senha" id="senha">
                 <input class="alterarVisivel" type="checkbox" onclick="toogle()">
                 <button class="submit"><p>Entrar</p></button>
+            </div>
+            <div class="linkCadastro">
+                <p>Não tem uma conta? <a href="cadastro.html">Clique aqui</a></p>
             </div>
         </div>
     </div>
 </body>
-<script src="script.js"></script>
+<script src="./assets/js/pages/index/script.js"></script>
 </html>
