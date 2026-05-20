@@ -1,12 +1,306 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SistBank</title>
+    <title>Home - HelpDesk</title>
     <link rel="stylesheet" href="assets/css/pages/home/home.css">
 </head>
 <body>
-    <h1>SEJA BEM-VINDO</h1>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span class="brand-icon">&#9741;</span>
+            <span class="brand-name">HelpDesk</span>
+        </div>
+        <div class="navbar-search">
+            <input type="text" class="search-input" placeholder="Buscar perguntas...">
+            <button class="search-btn" aria-label="Buscar">&#128269;</button>
+        </div>
+        <div class="navbar-actions">
+            <a href="#" class="nav-link" id="btnPerfil" title="Meu Perfil">
+                <span class="nav-icon">&#128100;</span>
+                <span class="nav-label">Perfil</span>
+            </a>
+            <a href="index.html" class="nav-link nav-logout" title="Sair">
+                <span class="nav-icon">&#128682;</span>
+                <span class="nav-label">Sair</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- MODAL PERFIL -->
+    <div class="modal-overlay" id="modalPerfil">
+        <div class="modal">
+            <button class="modal-close" id="fecharPerfil" aria-label="Fechar">&times;</button>
+            <div class="modal-avatar">&#128100;</div>
+            <h2 class="modal-username">João Silva</h2>
+            <p class="modal-email">joao@email.com</p>
+            <div class="modal-stats">
+                <div class="stat">
+                    <span class="stat-number" id="totalPerguntas">3</span>
+                    <span class="stat-label">Perguntas feitas</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="totalRespostas">7</span>
+                    <span class="stat-label">Respostas dadas</span>
+                </div>
+            </div>
+            <div class="modal-section">
+                <h3>Minhas Perguntas</h3>
+                <ul class="modal-list" id="listaMinhasPerguntas">
+                    <li>Como resetar senha no sistema?</li>
+                    <li>Erro ao acessar o módulo financeiro</li>
+                    <li>Como exportar relatório em PDF?</li>
+                </ul>
+            </div>
+            <div class="modal-section">
+                <h3>Minhas Respostas</h3>
+                <ul class="modal-list" id="listaMinhasRespostas">
+                    <li>Respondeu: "Acesse configurações > segurança..."</li>
+                    <li>Respondeu: "Verifique as permissões de acesso..."</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NOVA PERGUNTA -->
+    <div class="modal-overlay" id="modalNovaPergunta">
+        <div class="modal">
+            <button class="modal-close" id="fecharNovaPergunta" aria-label="Fechar">&times;</button>
+            <h2 class="modal-title">Nova Pergunta</h2>
+            <div class="form-group">
+                <label class="form-label" for="tituloPergunta">Título</label>
+                <input class="form-input" type="text" id="tituloPergunta" placeholder="Resumo da sua dúvida">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="categoriaPergunta">Categoria</label>
+                <select class="form-input" id="categoriaPergunta">
+                    <option value="">Selecione uma categoria</option>
+                    <option value="tecnico">Suporte Técnico</option>
+                    <option value="financeiro">Financeiro</option>
+                    <option value="rh">RH</option>
+                    <option value="geral">Geral</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="descricaoPergunta">Descrição</label>
+                <textarea class="form-input form-textarea" id="descricaoPergunta" placeholder="Descreva sua dúvida em detalhes..."></textarea>
+            </div>
+            <button class="btn-primary" id="publicarPergunta">Publicar Pergunta</button>
+        </div>
+    </div>
+
+    <!-- MODAL RESPONDER -->
+    <div class="modal-overlay" id="modalResponder">
+        <div class="modal">
+            <button class="modal-close" id="fecharResponder" aria-label="Fechar">&times;</button>
+            <h2 class="modal-title" id="tituloResponder">Responder Pergunta</h2>
+            <p class="modal-desc" id="descResponder"></p>
+            <div class="form-group">
+                <label class="form-label" for="textoResposta">Sua Resposta</label>
+                <textarea class="form-input form-textarea" id="textoResposta" placeholder="Escreva sua resposta..."></textarea>
+            </div>
+            <button class="btn-primary" id="enviarResposta">Enviar Resposta</button>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Categorias</h3>
+                <ul class="category-list">
+                    <li class="category-item active" data-cat="todas">Todas</li>
+                    <li class="category-item" data-cat="tecnico">&#128187; Suporte Técnico</li>
+                    <li class="category-item" data-cat="financeiro">&#128181; Financeiro</li>
+                    <li class="category-item" data-cat="rh">&#128101; RH</li>
+                    <li class="category-item" data-cat="geral">&#128218; Geral</li>
+                </ul>
+            </div>
+            <div class="sidebar-card">
+                <h3 class="sidebar-title">Estatísticas</h3>
+                <div class="stats-grid">
+                    <div class="stats-item">
+                        <span class="stats-num">24</span>
+                        <span class="stats-desc">Perguntas abertas</span>
+                    </div>
+                    <div class="stats-item">
+                        <span class="stats-num">138</span>
+                        <span class="stats-desc">Respostas hoje</span>
+                    </div>
+                    <div class="stats-item">
+                        <span class="stats-num">52</span>
+                        <span class="stats-desc">Usuários ativos</span>
+                    </div>
+                    <div class="stats-item">
+                        <span class="stats-num">91%</span>
+                        <span class="stats-desc">Taxa de resolução</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- FEED -->
+        <section class="feed">
+            <div class="feed-header">
+                <h2 class="feed-title">Perguntas Recentes</h2>
+                <button class="btn-primary btn-nova-pergunta" id="abrirNovaPergunta">+ Nova Pergunta</button>
+            </div>
+
+            <!-- FILTROS -->
+            <div class="filtros">
+                <button class="filtro-btn active" data-filtro="recentes">Recentes</button>
+                <button class="filtro-btn" data-filtro="sem-resposta">Sem resposta</button>
+                <button class="filtro-btn" data-filtro="resolvidas">Resolvidas</button>
+            </div>
+
+            <!-- CARDS DE PERGUNTAS -->
+            <div class="cards-container" id="cardsContainer">
+
+                <article class="card" data-cat="tecnico" data-status="aberta">
+                    <div class="card-header">
+                        <div class="card-avatar">JS</div>
+                        <div class="card-meta">
+                            <span class="card-author">João Silva</span>
+                            <span class="card-time">há 10 minutos</span>
+                        </div>
+                        <span class="card-badge badge-tecnico">Suporte Técnico</span>
+                    </div>
+                    <h3 class="card-title">Como resetar a senha do sistema sem acesso ao e-mail?</h3>
+                    <p class="card-desc">Perdi acesso ao meu e-mail corporativo e não consigo recuperar a senha. Existe outro método de verificação disponível?</p>
+                    <div class="card-footer">
+                        <span class="card-stat">&#128172; 3 respostas</span>
+                        <span class="card-stat">&#128065; 21 visualizações</span>
+                        <button class="btn-responder" 
+                            data-titulo="Como resetar a senha do sistema sem acesso ao e-mail?"
+                            data-desc="Perdi acesso ao meu e-mail corporativo e não consigo recuperar a senha.">
+                            Responder
+                        </button>
+                    </div>
+                </article>
+
+                <article class="card" data-cat="financeiro" data-status="aberta">
+                    <div class="card-header">
+                        <div class="card-avatar">MC</div>
+                        <div class="card-meta">
+                            <span class="card-author">Maria Costa</span>
+                            <span class="card-time">há 35 minutos</span>
+                        </div>
+                        <span class="card-badge badge-financeiro">Financeiro</span>
+                    </div>
+                    <h3 class="card-title">Erro ao gerar boleto no módulo financeiro</h3>
+                    <p class="card-desc">Ao tentar emitir um boleto, o sistema retorna o erro "código 500". Já tentei em outros navegadores e o problema persiste.</p>
+                    <div class="card-footer">
+                        <span class="card-stat">&#128172; 1 resposta</span>
+                        <span class="card-stat">&#128065; 45 visualizações</span>
+                        <button class="btn-responder"
+                            data-titulo="Erro ao gerar boleto no módulo financeiro"
+                            data-desc="Ao tentar emitir um boleto, o sistema retorna o erro código 500.">
+                            Responder
+                        </button>
+                    </div>
+                </article>
+
+                <article class="card" data-cat="rh" data-status="resolvida">
+                    <div class="card-header">
+                        <div class="card-avatar">PO</div>
+                        <div class="card-meta">
+                            <span class="card-author">Pedro Oliveira</span>
+                            <span class="card-time">há 2 horas</span>
+                        </div>
+                        <span class="card-badge badge-rh">RH</span>
+                    </div>
+                    <h3 class="card-title">Como solicitar férias pelo portal do colaborador?</h3>
+                    <p class="card-desc">Não encontro a opção de solicitação de férias no portal. Alguém pode me indicar onde fica esse menu?</p>
+                    <div class="card-footer">
+                        <span class="card-stat">&#128172; 5 respostas</span>
+                        <span class="card-stat">&#128065; 89 visualizações</span>
+                        <span class="badge-resolvida">&#10003; Resolvida</span>
+                    </div>
+                </article>
+
+                <article class="card" data-cat="geral" data-status="aberta">
+                    <div class="card-header">
+                        <div class="card-avatar">AL</div>
+                        <div class="card-meta">
+                            <span class="card-author">Ana Lima</span>
+                            <span class="card-time">há 3 horas</span>
+                        </div>
+                        <span class="card-badge badge-geral">Geral</span>
+                    </div>
+                    <h3 class="card-title">Como exportar relatórios em PDF?</h3>
+                    <p class="card-desc">Preciso exportar o relatório mensal em PDF mas só encontro a opção de Excel. Existe essa funcionalidade?</p>
+                    <div class="card-footer">
+                        <span class="card-stat">&#128172; 2 respostas</span>
+                        <span class="card-stat">&#128065; 33 visualizações</span>
+                        <button class="btn-responder"
+                            data-titulo="Como exportar relatórios em PDF?"
+                            data-desc="Preciso exportar o relatório mensal em PDF mas só encontro a opção de Excel.">
+                            Responder
+                        </button>
+                    </div>
+                </article>
+
+                <article class="card" data-cat="tecnico" data-status="aberta">
+                    <div class="card-header">
+                        <div class="card-avatar">RM</div>
+                        <div class="card-meta">
+                            <span class="card-author">Rafael Mendes</span>
+                            <span class="card-time">há 5 horas</span>
+                        </div>
+                        <span class="card-badge badge-tecnico">Suporte Técnico</span>
+                    </div>
+                    <h3 class="card-title">Sistema lento após atualização de ontem</h3>
+                    <p class="card-desc">Desde a atualização de ontem o sistema está muito lento, especialmente no módulo de estoque. Outros usuários estão com o mesmo problema?</p>
+                    <div class="card-footer">
+                        <span class="card-stat">&#128172; 0 respostas</span>
+                        <span class="card-stat">&#128065; 67 visualizações</span>
+                        <button class="btn-responder"
+                            data-titulo="Sistema lento após atualização de ontem"
+                            data-desc="Desde a atualização de ontem o sistema está muito lento no módulo de estoque.">
+                            Responder
+                        </button>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- CHATBOT FLUTUANTE -->
+    <div class="chatbot-container" id="chatbotContainer">
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <div class="chatbot-header-info">
+                    <span class="chatbot-avatar">&#129302;</span>
+                    <div>
+                        <span class="chatbot-name">Assistente HelpDesk</span>
+                        <span class="chatbot-status">Online</span>
+                    </div>
+                </div>
+                <button class="chatbot-close" id="fecharChatbot" aria-label="Fechar chat">&times;</button>
+            </div>
+            <div class="chatbot-messages" id="chatbotMessages">
+                <div class="msg bot-msg">
+                    <span class="msg-avatar">&#129302;</span>
+                    <div class="msg-bubble">Olá! Sou o assistente virtual do HelpDesk. Como posso te ajudar hoje?</div>
+                </div>
+            </div>
+            <div class="chatbot-input-area">
+                <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Digite sua dúvida...">
+                <button class="chatbot-send" id="chatbotSend" aria-label="Enviar">&#10148;</button>
+            </div>
+        </div>
+        <button class="chatbot-toggle" id="chatbotToggle" aria-label="Abrir assistente">
+            <span id="chatbotIcon">&#129302;</span>
+            <span class="chatbot-badge" id="chatbotBadge">1</span>
+        </button>
+    </div>
+
+    <script src="assets/js/pages/home/home.js"></script>
 </body>
 </html>
