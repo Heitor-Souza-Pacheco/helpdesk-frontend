@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // ===== AUTENTICAÇÃO =====
 verificarAutenticacao();
 
@@ -14,6 +15,8 @@ document.querySelector('.nav-logout').addEventListener('click', (e) => {
     window.location.href = 'index.html';
 });
 
+=======
+>>>>>>> ad3d079548373b0c8540beec98fa999abbec4e17
 // ===== PERFIL =====
 const btnPerfil       = document.getElementById('btnPerfil');
 const modalPerfil     = document.getElementById('modalPerfil');

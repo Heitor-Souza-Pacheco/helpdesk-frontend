@@ -112,6 +112,7 @@ body {
 
 .linkCadastro a:hover {
     text-decoration: underline;
+<<<<<<< HEAD
 }
 
 /* ===== MENSAGENS DE FEEDBACK ===== */
@@ -142,3 +143,6 @@ body {
     cursor: not-allowed;
     transform: none;
 }
+=======
+}
+>>>>>>> ad3d079548373b0c8540beec98fa999abbec4e17
