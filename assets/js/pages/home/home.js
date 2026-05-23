@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // ===== AUTENTICAÇÃO =====
 verificarAutenticacao();
 
@@ -7,16 +6,15 @@ const emailUsuario = sessionStorage.getItem('helpdesk_user') || 'usuário';
 document.querySelector('.modal-username').textContent = emailUsuario;
 document.querySelector('.modal-email').textContent = emailUsuario;
 
-// Logout — limpa token e redireciona
+// Logout — limpa token e redireciona com flag para evitar loop
 document.querySelector('.nav-logout').addEventListener('click', (e) => {
     e.preventDefault();
     removerToken();
     sessionStorage.removeItem('helpdesk_user');
+    sessionStorage.setItem('helpdesk_logout', 'true');
     window.location.href = 'index.html';
 });
 
-=======
->>>>>>> ad3d079548373b0c8540beec98fa999abbec4e17
 // ===== PERFIL =====
 const btnPerfil       = document.getElementById('btnPerfil');
 const modalPerfil     = document.getElementById('modalPerfil');
@@ -57,8 +55,7 @@ publicarPergunta.addEventListener('click', () => {
 
     adicionarCard(titulo, categoria, descricao);
 
-    // Limpa o formulário e fecha o modal
-    document.getElementById('tituloPergunta').value  = '';
+    document.getElementById('tituloPergunta').value    = '';
     document.getElementById('categoriaPergunta').value = '';
     document.getElementById('descricaoPergunta').value = '';
     modalNovaPergunta.classList.remove('aberto');
@@ -104,14 +101,11 @@ function adicionarCard(titulo, categoria, descricao) {
     const container = document.getElementById('cardsContainer');
     container.insertBefore(article, container.firstChild);
 
-    // Registra o evento de responder no novo card
     article.querySelector('.btn-responder').addEventListener('click', abrirModalResponder);
 
-    // Atualiza contador do perfil
     const totalPerguntas = document.getElementById('totalPerguntas');
     totalPerguntas.textContent = parseInt(totalPerguntas.textContent) + 1;
 
-    // Adiciona à lista de perguntas do perfil
     const listaMinhasPerguntas = document.getElementById('listaMinhasPerguntas');
     const li = document.createElement('li');
     li.textContent = titulo;
@@ -142,11 +136,9 @@ enviarResposta.addEventListener('click', () => {
         return;
     }
 
-    // Atualiza contador de respostas do perfil
     const totalRespostas = document.getElementById('totalRespostas');
     totalRespostas.textContent = parseInt(totalRespostas.textContent) + 1;
 
-    // Adiciona à lista de respostas do perfil
     const listaMinhasRespostas = document.getElementById('listaMinhasRespostas');
     const li = document.createElement('li');
     li.textContent = `Respondeu: "${texto.substring(0, 60)}${texto.length > 60 ? '...' : ''}"`;
@@ -156,7 +148,6 @@ enviarResposta.addEventListener('click', () => {
     alert('Resposta enviada com sucesso!');
 });
 
-// Registra eventos nos botões de responder já existentes
 document.querySelectorAll('.btn-responder').forEach(btn => {
     btn.addEventListener('click', abrirModalResponder);
 });
@@ -203,15 +194,14 @@ document.querySelectorAll('.filtro-btn').forEach(btn => {
 });
 
 // ===== CHATBOT =====
-const chatbotToggle  = document.getElementById('chatbotToggle');
-const chatbotWindow  = document.getElementById('chatbotWindow');
-const fecharChatbot  = document.getElementById('fecharChatbot');
-const chatbotInput   = document.getElementById('chatbotInput');
-const chatbotSend    = document.getElementById('chatbotSend');
+const chatbotToggle   = document.getElementById('chatbotToggle');
+const chatbotWindow   = document.getElementById('chatbotWindow');
+const fecharChatbot   = document.getElementById('fecharChatbot');
+const chatbotInput    = document.getElementById('chatbotInput');
+const chatbotSend     = document.getElementById('chatbotSend');
 const chatbotMessages = document.getElementById('chatbotMessages');
-const chatbotBadge   = document.getElementById('chatbotBadge');
+const chatbotBadge    = document.getElementById('chatbotBadge');
 
-// Respostas automáticas simuladas (substituir pela integração real)
 const respostasBot = [
     'Entendi sua dúvida! Vou verificar isso para você.',
     'Essa é uma boa pergunta. Você pode tentar acessar Configurações > Suporte para mais detalhes.',
@@ -235,11 +225,9 @@ function enviarMensagem() {
     const texto = chatbotInput.value.trim();
     if (!texto) return;
 
-    // Mensagem do usuário
     adicionarMensagem(texto, 'user');
     chatbotInput.value = '';
 
-    // Simula digitação do bot
     setTimeout(() => {
         const resposta = respostasBot[Math.floor(Math.random() * respostasBot.length)];
         adicionarMensagem(resposta, 'bot');

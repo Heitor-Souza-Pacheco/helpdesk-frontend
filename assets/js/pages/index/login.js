@@ -1,7 +1,10 @@
 // ===== LOGIN =====
 
-// Se já estiver logado, vai direto para a home
-if (getToken()) {
+// Se já estiver logado E não veio de um logout, vai direto para a home
+const veioDeLogout = sessionStorage.getItem('helpdesk_logout');
+if (veioDeLogout) {
+    sessionStorage.removeItem('helpdesk_logout');
+} else if (getToken()) {
     window.location.href = 'home.html';
 }
 
