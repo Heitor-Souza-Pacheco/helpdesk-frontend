@@ -1,0 +1,11 @@
+# ===== IDE =====
+.vscode/
+.idea/
+
+# ===== SISTEMA =====
+.DS_Store
+Thumbs.db
+*.log
+
+# ===== DEPENDÊNCIAS (se usar npm futuramente) =====
+node_modules/

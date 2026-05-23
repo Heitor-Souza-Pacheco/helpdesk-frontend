@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/pages/index/style.css">
-    <title>Login in SistBank</title>
+    <title>Login - HelpDesk</title>
 </head>
 <body>
     <div class="container">
@@ -14,15 +14,20 @@
         </div>
         <div class="ladoDireito">
             <h2 class="descricao">Faça login na sua conta</h2>
+
+            <div id="mensagemErro" class="mensagem-erro" style="display:none;"></div>
+
             <div class="input">
-                <p class="label">Nome</p>
-                <input class="inputEntrada" type="text" placeholder="Digite seu nome">
+                <p class="label">E-mail</p>
+                <input class="inputEntrada" type="email" id="email" placeholder="Digite seu e-mail">
             </div>
             <div class="input">
                 <p class="label">Senha</p>
                 <input class="inputEntrada" type="password" placeholder="Digite sua senha" id="senha">
                 <input class="alterarVisivel" type="checkbox" onclick="toogle()">
-                <a href="home.html"><button class="submit"><p>Entrar</p></button></a>
+                <button class="submit" id="btnEntrar" onclick="fazerLogin()">
+                    <p id="btnEntrarTexto">Entrar</p>
+                </button>
             </div>
             <div class="linkCadastro">
                 <p>Não tem uma conta? <a href="cadastro.html">Clique aqui</a></p>
@@ -30,5 +35,7 @@
         </div>
     </div>
 </body>
+<script src="./assets/js/global/api.js"></script>
 <script src="./assets/js/pages/index/script.js"></script>
+<script src="./assets/js/pages/index/login.js"></script>
 </html>

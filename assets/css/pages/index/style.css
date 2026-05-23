@@ -113,3 +113,32 @@ body {
 .linkCadastro a:hover {
     text-decoration: underline;
 }
+
+/* ===== MENSAGENS DE FEEDBACK ===== */
+.mensagem-erro {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+    border-radius: 6px;
+    padding: 0.6rem 0.9rem;
+    font-family: var(--FontSub);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.mensagem-sucesso {
+    background-color: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+    border-radius: 6px;
+    padding: 0.6rem 0.9rem;
+    font-family: var(--FontSub);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}

@@ -1,3 +1,19 @@
+// ===== AUTENTICAÇÃO =====
+verificarAutenticacao();
+
+// Exibe o email do usuário logado no perfil
+const emailUsuario = sessionStorage.getItem('helpdesk_user') || 'usuário';
+document.querySelector('.modal-username').textContent = emailUsuario;
+document.querySelector('.modal-email').textContent = emailUsuario;
+
+// Logout — limpa token e redireciona
+document.querySelector('.nav-logout').addEventListener('click', (e) => {
+    e.preventDefault();
+    removerToken();
+    sessionStorage.removeItem('helpdesk_user');
+    window.location.href = 'index.html';
+});
+
 // ===== PERFIL =====
 const btnPerfil       = document.getElementById('btnPerfil');
 const modalPerfil     = document.getElementById('modalPerfil');

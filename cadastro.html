@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastre no SistBank</title>
+    <title>Cadastro - HelpDesk</title>
     <link rel="stylesheet" href="assets/css/pages/cadastro/cadastro.css">
 </head>
 <body>
@@ -14,19 +14,27 @@
         </div>
         <div class="ladoDireito">
             <h2 class="descricao">Crie uma nova conta</h2>
+
+            <div id="mensagemErro" class="mensagem-erro" style="display:none;"></div>
+            <div id="mensagemSucesso" class="mensagem-sucesso" style="display:none;"></div>
+
             <div class="input">
-                <p class="label">Nome</p>
-                <input class="inputEntrada" type="text" placeholder="Digite seu nome">
+                <p class="label">E-mail</p>
+                <input class="inputEntrada" type="email" id="email" placeholder="Digite seu e-mail">
             </div>
             <div class="input">
                 <p class="label">Senha</p>
                 <input class="inputEntrada" type="password" placeholder="Digite sua senha" id="senha">
                 <input class="alterarVisivel" type="checkbox" onclick="toogle()">
-                <a href="index.html"><button class="submit"><p>Criar</p></button></a>
+                <button class="submit" id="btnCriar" onclick="fazerCadastro()">
+                    <p id="btnCriarTexto">Criar</p>
+                </button>
                 <a href="index.html"><button class="submit"><p>Voltar</p></button></a>
             </div>
         </div>
     </div>
 </body>
+<script src="./assets/js/global/api.js"></script>
 <script src="./assets/js/pages/index/script.js"></script>
+<script src="./assets/js/pages/cadastro/cadastro.js"></script>
 </html>
