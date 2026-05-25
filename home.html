@@ -75,20 +75,27 @@
                 <input class="form-input" type="text" id="tituloPergunta" placeholder="Resumo da sua dúvida">
             </div>
             <div class="form-group">
-                <label class="form-label" for="categoriaPergunta">Categoria</label>
-                <select class="form-input" id="categoriaPergunta">
-                    <option value="">Selecione uma categoria</option>
-                    <option value="tecnico">Suporte Técnico</option>
-                    <option value="financeiro">Financeiro</option>
-                    <option value="rh">RH</option>
-                    <option value="geral">Geral</option>
-                </select>
-            </div>
-            <div class="form-group">
                 <label class="form-label" for="descricaoPergunta">Descrição</label>
                 <textarea class="form-input form-textarea" id="descricaoPergunta" placeholder="Descreva sua dúvida em detalhes..."></textarea>
             </div>
             <button class="btn-primary" id="publicarPergunta">Publicar Pergunta</button>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR PERGUNTA -->
+    <div class="modal-overlay" id="modalEditar">
+        <div class="modal">
+            <button class="modal-close" id="fecharEditar" aria-label="Fechar">&times;</button>
+            <h2 class="modal-title">Editar Pergunta</h2>
+            <div class="form-group">
+                <label class="form-label" for="editarTitulo">Título</label>
+                <input class="form-input" type="text" id="editarTitulo" placeholder="Título da pergunta">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="editarDescricao">Descrição</label>
+                <textarea class="form-input form-textarea" id="editarDescricao" placeholder="Descrição da pergunta..."></textarea>
+            </div>
+            <button class="btn-primary" id="salvarEdicao">Salvar Alterações</button>
         </div>
     </div>
 
@@ -158,115 +165,11 @@
                 <button class="filtro-btn" data-filtro="resolvidas">Resolvidas</button>
             </div>
 
-            <!-- CARDS DE PERGUNTAS -->
+            <!-- CARDS DE PERGUNTAS (carregados da API) -->
             <div class="cards-container" id="cardsContainer">
-
-                <article class="card" data-cat="tecnico" data-status="aberta">
-                    <div class="card-header">
-                        <div class="card-avatar">JS</div>
-                        <div class="card-meta">
-                            <span class="card-author">João Silva</span>
-                            <span class="card-time">há 10 minutos</span>
-                        </div>
-                        <span class="card-badge badge-tecnico">Suporte Técnico</span>
-                    </div>
-                    <h3 class="card-title">Como resetar a senha do sistema sem acesso ao e-mail?</h3>
-                    <p class="card-desc">Perdi acesso ao meu e-mail corporativo e não consigo recuperar a senha. Existe outro método de verificação disponível?</p>
-                    <div class="card-footer">
-                        <span class="card-stat">&#128172; 3 respostas</span>
-                        <span class="card-stat">&#128065; 21 visualizações</span>
-                        <button class="btn-responder" 
-                            data-titulo="Como resetar a senha do sistema sem acesso ao e-mail?"
-                            data-desc="Perdi acesso ao meu e-mail corporativo e não consigo recuperar a senha.">
-                            Responder
-                        </button>
-                    </div>
-                </article>
-
-                <article class="card" data-cat="financeiro" data-status="aberta">
-                    <div class="card-header">
-                        <div class="card-avatar">MC</div>
-                        <div class="card-meta">
-                            <span class="card-author">Maria Costa</span>
-                            <span class="card-time">há 35 minutos</span>
-                        </div>
-                        <span class="card-badge badge-financeiro">Financeiro</span>
-                    </div>
-                    <h3 class="card-title">Erro ao gerar boleto no módulo financeiro</h3>
-                    <p class="card-desc">Ao tentar emitir um boleto, o sistema retorna o erro "código 500". Já tentei em outros navegadores e o problema persiste.</p>
-                    <div class="card-footer">
-                        <span class="card-stat">&#128172; 1 resposta</span>
-                        <span class="card-stat">&#128065; 45 visualizações</span>
-                        <button class="btn-responder"
-                            data-titulo="Erro ao gerar boleto no módulo financeiro"
-                            data-desc="Ao tentar emitir um boleto, o sistema retorna o erro código 500.">
-                            Responder
-                        </button>
-                    </div>
-                </article>
-
-                <article class="card" data-cat="rh" data-status="resolvida">
-                    <div class="card-header">
-                        <div class="card-avatar">PO</div>
-                        <div class="card-meta">
-                            <span class="card-author">Pedro Oliveira</span>
-                            <span class="card-time">há 2 horas</span>
-                        </div>
-                        <span class="card-badge badge-rh">RH</span>
-                    </div>
-                    <h3 class="card-title">Como solicitar férias pelo portal do colaborador?</h3>
-                    <p class="card-desc">Não encontro a opção de solicitação de férias no portal. Alguém pode me indicar onde fica esse menu?</p>
-                    <div class="card-footer">
-                        <span class="card-stat">&#128172; 5 respostas</span>
-                        <span class="card-stat">&#128065; 89 visualizações</span>
-                        <span class="badge-resolvida">&#10003; Resolvida</span>
-                    </div>
-                </article>
-
-                <article class="card" data-cat="geral" data-status="aberta">
-                    <div class="card-header">
-                        <div class="card-avatar">AL</div>
-                        <div class="card-meta">
-                            <span class="card-author">Ana Lima</span>
-                            <span class="card-time">há 3 horas</span>
-                        </div>
-                        <span class="card-badge badge-geral">Geral</span>
-                    </div>
-                    <h3 class="card-title">Como exportar relatórios em PDF?</h3>
-                    <p class="card-desc">Preciso exportar o relatório mensal em PDF mas só encontro a opção de Excel. Existe essa funcionalidade?</p>
-                    <div class="card-footer">
-                        <span class="card-stat">&#128172; 2 respostas</span>
-                        <span class="card-stat">&#128065; 33 visualizações</span>
-                        <button class="btn-responder"
-                            data-titulo="Como exportar relatórios em PDF?"
-                            data-desc="Preciso exportar o relatório mensal em PDF mas só encontro a opção de Excel.">
-                            Responder
-                        </button>
-                    </div>
-                </article>
-
-                <article class="card" data-cat="tecnico" data-status="aberta">
-                    <div class="card-header">
-                        <div class="card-avatar">RM</div>
-                        <div class="card-meta">
-                            <span class="card-author">Rafael Mendes</span>
-                            <span class="card-time">há 5 horas</span>
-                        </div>
-                        <span class="card-badge badge-tecnico">Suporte Técnico</span>
-                    </div>
-                    <h3 class="card-title">Sistema lento após atualização de ontem</h3>
-                    <p class="card-desc">Desde a atualização de ontem o sistema está muito lento, especialmente no módulo de estoque. Outros usuários estão com o mesmo problema?</p>
-                    <div class="card-footer">
-                        <span class="card-stat">&#128172; 0 respostas</span>
-                        <span class="card-stat">&#128065; 67 visualizações</span>
-                        <button class="btn-responder"
-                            data-titulo="Sistema lento após atualização de ontem"
-                            data-desc="Desde a atualização de ontem o sistema está muito lento no módulo de estoque.">
-                            Responder
-                        </button>
-                    </div>
-                </article>
-
+                <div class="loading-state">
+                    <p>Carregando perguntas...</p>
+                </div>
             </div>
         </section>
     </main>

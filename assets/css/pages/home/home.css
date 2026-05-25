@@ -399,6 +399,65 @@ body {
     color: #fff;
 }
 
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.btn-editar {
+    background: transparent;
+    border: 1.5px solid #d97706;
+    color: #d97706;
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    transition: all 0.2s;
+}
+
+.btn-editar:hover {
+    background: #d97706;
+    color: #fff;
+}
+
+.btn-excluir {
+    background: transparent;
+    border: 1.5px solid #dc2626;
+    color: #dc2626;
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    transition: all 0.2s;
+}
+
+.btn-excluir:hover {
+    background: #dc2626;
+    color: #fff;
+}
+
+.btn-editar:disabled,
+.btn-excluir:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===== ESTADOS LOADING / VAZIO ===== */
+.loading-state,
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #888;
+    font-size: 0.95rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+
 .badge-resolvida {
     margin-left: auto;
     font-size: 0.8rem;
