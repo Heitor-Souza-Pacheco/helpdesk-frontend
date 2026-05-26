@@ -505,19 +505,16 @@ document.querySelectorAll('.filtro-btn').forEach(btn => {
         btn.classList.add('active');
 
         const filtro = btn.dataset.filtro;
-        const cards = document.querySelectorAll('.card');
 
-        cards.forEach(card => {
-            if (filtro === 'recentes') {
-                card.style.display = '';
-            } else if (filtro === 'sem-resposta') {
-                const stat = card.querySelector('.card-stat');
-                const num  = parseInt(stat ? stat.textContent : '1');
-                card.style.display = num === 0 ? '' : 'none';
-            } else if (filtro === 'resolvidas') {
-                card.style.display = card.dataset.status === 'resolvida' ? '' : 'none';
-            }
-        });
+        if (filtro === 'recentes') {
+            renderizarCards(todasPerguntas);
+        } else if (filtro === 'sem-resposta') {
+            const filtradas = todasPerguntas.filter(p => (p._respostas || []).length === 0);
+            renderizarCards(filtradas);
+        } else if (filtro === 'resolvidas') {
+            const filtradas = todasPerguntas.filter(p => (p._respostas || []).length > 0);
+            renderizarCards(filtradas);
+        }
     });
 });
 
