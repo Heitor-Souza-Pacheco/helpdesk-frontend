@@ -427,7 +427,9 @@ async function abrirModalVerRespostas(e) {
     try {
         const resp = await fetchAutenticado(`/resposta/pergunta/${perguntaId}`);
         if (resp.ok) {
-            const respostas = await resp.json();
+            let respostas = await resp.json();
+            // Ordena por curtidas (mais curtidas primeiro)
+            respostas.sort((a, b) => (b.curtidas || 0) - (a.curtidas || 0));
             lista.innerHTML = '';
 
             if (respostas.length === 0) {
@@ -439,9 +441,26 @@ async function abrirModalVerRespostas(e) {
                     div.innerHTML = `
                         <div class="resposta-header">
                             <span class="resposta-autor">${escapeHtml(r.nomeUsuario || 'Anônimo')}</span>
+                            <span class="resposta-curtidas">&#128077; ${r.curtidas || 0}</span>
                         </div>
                         <p class="resposta-corpo">${escapeHtml(r.corpoResposta)}</p>
+                        <button class="btn-curtir" data-id="${r.id}">&#128077; Curtir</button>
                     `;
+                    div.querySelector('.btn-curtir').addEventListener('click', async (ev) => {
+                        const btnCurtir = ev.currentTarget;
+                        btnCurtir.disabled = true;
+                        try {
+                            const curtirResp = await fetchAutenticado(`/resposta/curtir/${r.id}`, { method: 'PUT' });
+                            if (curtirResp.ok) {
+                                const atualizada = await curtirResp.json();
+                                div.querySelector('.resposta-curtidas').textContent = `👍 ${atualizada.curtidas}`;
+                            }
+                        } catch (err) {
+                            console.error('Erro ao curtir:', err);
+                        } finally {
+                            btnCurtir.disabled = false;
+                        }
+                    });
                     lista.appendChild(div);
                 });
             }

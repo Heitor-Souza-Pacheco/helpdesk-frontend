@@ -480,6 +480,8 @@ body {
 }
 
 .resposta-header {
+    display: flex;
+    align-items: center;
     margin-bottom: 0.4rem;
 }
 
@@ -489,10 +491,39 @@ body {
     color: #090979;
 }
 
+.resposta-curtidas {
+    font-size: 0.78rem;
+    color: #666;
+    margin-left: auto;
+}
+
 .resposta-corpo {
     font-size: 0.85rem;
     color: #444;
     line-height: 1.5;
+}
+
+.btn-curtir {
+    background: transparent;
+    border: 1.5px solid #090979;
+    color: #090979;
+    padding: 0.25rem 0.7rem;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+}
+
+.btn-curtir:hover {
+    background: #090979;
+    color: #fff;
+}
+
+.btn-curtir:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .empty-respostas {
