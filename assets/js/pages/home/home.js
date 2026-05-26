@@ -72,6 +72,16 @@ async function carregarPerguntas() {
         const resposta = await fetchAutenticado('/pergunta');
         if (resposta.ok) {
             todasPerguntas = await resposta.json();
+
+            // Busca contagem de respostas para cada pergunta
+            const respostasPromises = todasPerguntas.map(p =>
+                fetchAutenticado(`/resposta/pergunta/${p.id}`).then(r => r.ok ? r.json() : [])
+            );
+            const respostasPorPergunta = await Promise.all(respostasPromises);
+            todasPerguntas.forEach((p, i) => {
+                p._respostas = respostasPorPergunta[i];
+            });
+
             renderizarCards(todasPerguntas);
             atualizarEstatisticas();
         } else if (resposta.status === 401 || resposta.status === 403) {
@@ -116,6 +126,8 @@ function criarCardElement(pergunta) {
     const cat = pergunta.categoriaPergunta || 'geral';
     const badge = categoriaMap[cat] || { label: cat, cls: 'badge-geral' };
 
+    const numRespostas = (pergunta._respostas || []).length;
+
     article.innerHTML = `
         <div class="card-header">
             <div class="card-avatar">${iniciais}</div>
@@ -128,7 +140,7 @@ function criarCardElement(pergunta) {
         <h3 class="card-title">${escapeHtml(pergunta.tituloPergunta)}</h3>
         <p class="card-desc">${escapeHtml(pergunta.corpoPergunta)}</p>
         <div class="card-footer">
-            <span class="card-stat">&#128172; 0 respostas</span>
+            <span class="card-stat">&#128172; ${numRespostas} resposta${numRespostas !== 1 ? 's' : ''}</span>
             <div class="card-actions">
                 <button class="btn-responder" 
                     data-id="${pergunta.id}"
@@ -316,8 +328,11 @@ const modalResponder  = document.getElementById('modalResponder');
 const fecharResponder = document.getElementById('fecharResponder');
 const enviarResposta  = document.getElementById('enviarResposta');
 
+let perguntaRespondendoId = null;
+
 function abrirModalResponder(e) {
     const btn = e.currentTarget;
+    perguntaRespondendoId = btn.dataset.id;
     document.getElementById('tituloResponder').textContent = btn.dataset.titulo;
     document.getElementById('descResponder').textContent   = btn.dataset.desc;
     document.getElementById('textoResposta').value = '';
@@ -326,25 +341,42 @@ function abrirModalResponder(e) {
 
 fecharResponder.addEventListener('click', () => {
     modalResponder.classList.remove('aberto');
+    perguntaRespondendoId = null;
 });
 
-enviarResposta.addEventListener('click', () => {
+enviarResposta.addEventListener('click', async () => {
     const texto = document.getElementById('textoResposta').value.trim();
     if (!texto) {
         alert('Escreva sua resposta antes de enviar.');
         return;
     }
 
-    const totalRespostas = document.getElementById('totalRespostas');
-    totalRespostas.textContent = parseInt(totalRespostas.textContent) + 1;
+    enviarResposta.disabled = true;
+    enviarResposta.textContent = 'Enviando...';
 
-    const listaMinhasRespostas = document.getElementById('listaMinhasRespostas');
-    const li = document.createElement('li');
-    li.textContent = `Respondeu: "${texto.substring(0, 60)}${texto.length > 60 ? '...' : ''}"`;
-    listaMinhasRespostas.appendChild(li);
+    try {
+        const resposta = await fetchAutenticado('/resposta', {
+            method: 'POST',
+            body: JSON.stringify({
+                corpoResposta: texto,
+                perguntaId: parseInt(perguntaRespondendoId)
+            })
+        });
 
-    modalResponder.classList.remove('aberto');
-    alert('Resposta enviada com sucesso!');
+        if (resposta.ok) {
+            modalResponder.classList.remove('aberto');
+            perguntaRespondendoId = null;
+            await carregarPerguntas();
+            alert('Resposta enviada com sucesso!');
+        } else {
+            alert('Erro ao enviar resposta. Tente novamente.');
+        }
+    } catch (e) {
+        alert('Não foi possível conectar à API.');
+    } finally {
+        enviarResposta.disabled = false;
+        enviarResposta.textContent = 'Enviar Resposta';
+    }
 });
 
 // ===== FECHAR MODAL AO CLICAR FORA =====
