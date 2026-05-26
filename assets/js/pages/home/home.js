@@ -52,7 +52,7 @@ async function carregarMinhasPerguntas() {
         }
 
         // Carrega respostas do usuário
-        const respostaResp = await fetchAutenticado('/resposta');
+        const respostaResp = await fetchAutenticado('/resposta/minhas');
         if (respostaResp.ok) {
             const todasRespostas = await respostaResp.json();
             const listaRespostas = document.getElementById('listaMinhasRespostas');
