@@ -128,6 +128,17 @@
         </div>
     </div>
 
+    <!-- MODAL VER RESPOSTAS -->
+    <div class="modal-overlay" id="modalVerRespostas">
+        <div class="modal">
+            <button class="modal-close" id="fecharVerRespostas" aria-label="Fechar">&times;</button>
+            <h2 class="modal-title" id="tituloVerRespostas">Respostas</h2>
+            <div class="respostas-lista" id="listaRespostas">
+                <p>Carregando respostas...</p>
+            </div>
+        </div>
+    </div>
+
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content">
 
@@ -147,20 +158,12 @@
                 <h3 class="sidebar-title">Estatísticas</h3>
                 <div class="stats-grid">
                     <div class="stats-item">
-                        <span class="stats-num">24</span>
+                        <span class="stats-num" id="statPerguntas">0</span>
                         <span class="stats-desc">Perguntas abertas</span>
                     </div>
                     <div class="stats-item">
-                        <span class="stats-num">138</span>
-                        <span class="stats-desc">Respostas hoje</span>
-                    </div>
-                    <div class="stats-item">
-                        <span class="stats-num">52</span>
-                        <span class="stats-desc">Usuários ativos</span>
-                    </div>
-                    <div class="stats-item">
-                        <span class="stats-num">91%</span>
-                        <span class="stats-desc">Taxa de resolução</span>
+                        <span class="stats-num" id="statRespostas">0</span>
+                        <span class="stats-desc">Total de respostas</span>
                     </div>
                 </div>
             </div>

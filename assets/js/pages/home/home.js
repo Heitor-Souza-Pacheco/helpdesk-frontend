@@ -50,6 +50,27 @@ async function carregarMinhasPerguntas() {
 
             document.getElementById('totalPerguntas').textContent = minhas.length;
         }
+
+        // Carrega respostas do usuário
+        const respostaResp = await fetchAutenticado('/resposta');
+        if (respostaResp.ok) {
+            const todasRespostas = await respostaResp.json();
+            const listaRespostas = document.getElementById('listaMinhasRespostas');
+            listaRespostas.innerHTML = '';
+
+            if (todasRespostas.length === 0) {
+                listaRespostas.innerHTML = '<li>Você ainda não respondeu nenhuma pergunta.</li>';
+            } else {
+                todasRespostas.forEach(r => {
+                    const li = document.createElement('li');
+                    const texto = r.corpoResposta || '';
+                    li.textContent = `Respondeu: "${texto.substring(0, 60)}${texto.length > 60 ? '...' : ''}"`;
+                    listaRespostas.appendChild(li);
+                });
+            }
+
+            document.getElementById('totalRespostas').textContent = todasRespostas.length;
+        }
     } catch (e) {
         console.error('Erro ao carregar minhas perguntas:', e);
     }
@@ -142,6 +163,11 @@ function criarCardElement(pergunta) {
         <div class="card-footer">
             <span class="card-stat">&#128172; ${numRespostas} resposta${numRespostas !== 1 ? 's' : ''}</span>
             <div class="card-actions">
+                <button class="btn-ver-respostas"
+                    data-id="${pergunta.id}"
+                    data-titulo="${escapeAttr(pergunta.tituloPergunta)}">
+                    &#128172; Ver Respostas (${numRespostas})
+                </button>
                 <button class="btn-responder" 
                     data-id="${pergunta.id}"
                     data-titulo="${escapeAttr(pergunta.tituloPergunta)}"
@@ -161,6 +187,7 @@ function criarCardElement(pergunta) {
         </div>
     `;
 
+    article.querySelector('.btn-ver-respostas').addEventListener('click', abrirModalVerRespostas);
     article.querySelector('.btn-responder').addEventListener('click', abrirModalResponder);
     article.querySelector('.btn-editar').addEventListener('click', abrirModalEditar);
     article.querySelector('.btn-excluir').addEventListener('click', confirmarExclusao);
@@ -380,7 +407,53 @@ enviarResposta.addEventListener('click', async () => {
 });
 
 // ===== FECHAR MODAL AO CLICAR FORA =====
-[modalPerfil, modalNovaPergunta, modalResponder, modalEditar].forEach(modal => {
+const modalVerRespostas = document.getElementById('modalVerRespostas');
+const fecharVerRespostas = document.getElementById('fecharVerRespostas');
+
+fecharVerRespostas.addEventListener('click', () => {
+    modalVerRespostas.classList.remove('aberto');
+});
+
+async function abrirModalVerRespostas(e) {
+    const btn = e.currentTarget;
+    const perguntaId = btn.dataset.id;
+    const titulo = btn.dataset.titulo;
+
+    document.getElementById('tituloVerRespostas').textContent = `Respostas: ${titulo}`;
+    const lista = document.getElementById('listaRespostas');
+    lista.innerHTML = '<p>Carregando...</p>';
+    modalVerRespostas.classList.add('aberto');
+
+    try {
+        const resp = await fetchAutenticado(`/resposta/pergunta/${perguntaId}`);
+        if (resp.ok) {
+            const respostas = await resp.json();
+            lista.innerHTML = '';
+
+            if (respostas.length === 0) {
+                lista.innerHTML = '<p class="empty-respostas">Nenhuma resposta ainda. Seja o primeiro a responder!</p>';
+            } else {
+                respostas.forEach(r => {
+                    const div = document.createElement('div');
+                    div.className = 'resposta-item';
+                    div.innerHTML = `
+                        <div class="resposta-header">
+                            <span class="resposta-autor">${escapeHtml(r.nomeUsuario || 'Anônimo')}</span>
+                        </div>
+                        <p class="resposta-corpo">${escapeHtml(r.corpoResposta)}</p>
+                    `;
+                    lista.appendChild(div);
+                });
+            }
+        } else {
+            lista.innerHTML = '<p>Erro ao carregar respostas.</p>';
+        }
+    } catch (e) {
+        lista.innerHTML = '<p>Erro de conexão.</p>';
+    }
+}
+
+[modalPerfil, modalNovaPergunta, modalResponder, modalEditar, modalVerRespostas].forEach(modal => {
     modal.addEventListener('click', (e) => {
         if (e.target === modal) modal.classList.remove('aberto');
     });
@@ -453,8 +526,13 @@ function atualizarEstatisticas() {
     const totalPerguntas = document.getElementById('totalPerguntas');
     if (totalPerguntas) totalPerguntas.textContent = todasPerguntas.length;
 
-    const statsNums = document.querySelectorAll('.stats-num');
-    if (statsNums.length > 0) statsNums[0].textContent = todasPerguntas.length;
+    // Sidebar
+    const statPerguntas = document.getElementById('statPerguntas');
+    if (statPerguntas) statPerguntas.textContent = todasPerguntas.length;
+
+    const totalRespostasGeral = todasPerguntas.reduce((acc, p) => acc + (p._respostas || []).length, 0);
+    const statRespostas = document.getElementById('statRespostas');
+    if (statRespostas) statRespostas.textContent = totalRespostasGeral;
 }
 
 // ===== CHATBOT =====

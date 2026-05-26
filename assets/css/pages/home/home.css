@@ -440,10 +440,65 @@ body {
     color: #fff;
 }
 
+.btn-ver-respostas {
+    background: transparent;
+    border: 1.5px solid #090979;
+    color: #090979;
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+    transition: all 0.2s;
+}
+
+.btn-ver-respostas:hover {
+    background: #090979;
+    color: #fff;
+}
+
 .btn-editar:disabled,
 .btn-excluir:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* ===== RESPOSTAS NO MODAL ===== */
+.respostas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.resposta-item {
+    background: #f8f9ff;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    border-left: 3px solid #090979;
+}
+
+.resposta-header {
+    margin-bottom: 0.4rem;
+}
+
+.resposta-autor {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #090979;
+}
+
+.resposta-corpo {
+    font-size: 0.85rem;
+    color: #444;
+    line-height: 1.5;
+}
+
+.empty-respostas {
+    text-align: center;
+    color: #888;
+    font-style: italic;
 }
 
 /* ===== ESTADOS LOADING / VAZIO ===== */
