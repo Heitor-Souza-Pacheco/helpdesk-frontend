@@ -526,6 +526,12 @@ body {
     cursor: not-allowed;
 }
 
+.btn-curtido {
+    background: #090979;
+    color: #fff;
+    border-color: #090979;
+}
+
 .empty-respostas {
     text-align: center;
     color: #888;

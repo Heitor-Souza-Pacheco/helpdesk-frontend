@@ -361,14 +361,15 @@ async function confirmarExclusao(e) {
         });
 
         if (resposta.ok) {
+            mostrarToast('Pergunta excluída com sucesso!');
             await carregarPerguntas();
         } else {
-            alert('Erro ao excluir pergunta. Tente novamente.');
+            mostrarToast('Erro ao excluir pergunta. Tente novamente.', 'erro');
             btn.disabled = false;
             btn.textContent = '🗑 Excluir';
         }
     } catch (e) {
-        alert('Não foi possível conectar à API.');
+        mostrarToast('Não foi possível conectar à API.', 'erro');
         btn.disabled = false;
         btn.textContent = '🗑 Excluir';
     }
@@ -470,23 +471,41 @@ async function abrirModalVerRespostas(e) {
                         <p class="resposta-corpo">${escapeHtml(r.corpoResposta)}</p>
                         <button class="btn-curtir" data-id="${r.id}">&#128077; Curtir</button>
                     `;
-                    div.querySelector('.btn-curtir').addEventListener('click', async (ev) => {
-                        const btnCurtir = ev.currentTarget;
+                    // Toggle curtir/descurtir
+                    let curtido = false;
+                    const btnCurtir = div.querySelector('.btn-curtir');
+                    btnCurtir.addEventListener('click', async () => {
                         btnCurtir.disabled = true;
                         try {
-                            const curtirResp = await fetch(`${API_BASE_URL}/resposta/curtir/${r.id}`, {
-                                method: 'PUT',
-                                headers: {
-                                    'Authorization': `Bearer ${getToken()}`
+                            if (!curtido) {
+                                // Curtir
+                                const curtirResp = await fetch(`${API_BASE_URL}/resposta/curtir/${r.id}`, {
+                                    method: 'PUT',
+                                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                                });
+                                if (curtirResp.ok) {
+                                    const atualizada = await curtirResp.json();
+                                    div.querySelector('.resposta-curtidas').textContent = `👍 ${atualizada.curtidas}`;
+                                    btnCurtir.textContent = '👎 Descurtir';
+                                    btnCurtir.classList.add('btn-curtido');
+                                    curtido = true;
                                 }
-                            });
-                            if (curtirResp.ok) {
-                                const atualizada = await curtirResp.json();
-                                div.querySelector('.resposta-curtidas').textContent = `👍 ${atualizada.curtidas}`;
-                                btnCurtir.textContent = `👍 Curtido (${atualizada.curtidas})`;
+                            } else {
+                                // Descurtir
+                                const descurtirResp = await fetch(`${API_BASE_URL}/resposta/descurtir/${r.id}`, {
+                                    method: 'PUT',
+                                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                                });
+                                if (descurtirResp.ok) {
+                                    const atualizada = await descurtirResp.json();
+                                    div.querySelector('.resposta-curtidas').textContent = `👍 ${atualizada.curtidas}`;
+                                    btnCurtir.textContent = '👍 Curtir';
+                                    btnCurtir.classList.remove('btn-curtido');
+                                    curtido = false;
+                                }
                             }
                         } catch (err) {
-                            console.error('Erro ao curtir:', err);
+                            console.error('Erro ao curtir/descurtir:', err);
                         } finally {
                             btnCurtir.disabled = false;
                         }
