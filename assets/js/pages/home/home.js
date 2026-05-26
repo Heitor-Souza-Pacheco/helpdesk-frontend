@@ -20,14 +20,40 @@ const btnPerfil       = document.getElementById('btnPerfil');
 const modalPerfil     = document.getElementById('modalPerfil');
 const fecharPerfil    = document.getElementById('fecharPerfil');
 
-btnPerfil.addEventListener('click', (e) => {
+btnPerfil.addEventListener('click', async (e) => {
     e.preventDefault();
     modalPerfil.classList.add('aberto');
+    await carregarMinhasPerguntas();
 });
 
 fecharPerfil.addEventListener('click', () => {
     modalPerfil.classList.remove('aberto');
 });
+
+async function carregarMinhasPerguntas() {
+    try {
+        const resposta = await fetchAutenticado('/pergunta/minhas');
+        if (resposta.ok) {
+            const minhas = await resposta.json();
+            const lista = document.getElementById('listaMinhasPerguntas');
+            lista.innerHTML = '';
+
+            if (minhas.length === 0) {
+                lista.innerHTML = '<li>Você ainda não fez nenhuma pergunta.</li>';
+            } else {
+                minhas.forEach(p => {
+                    const li = document.createElement('li');
+                    li.textContent = p.tituloPergunta;
+                    lista.appendChild(li);
+                });
+            }
+
+            document.getElementById('totalPerguntas').textContent = minhas.length;
+        }
+    } catch (e) {
+        console.error('Erro ao carregar minhas perguntas:', e);
+    }
+}
 
 // ===== VARIÁVEIS GLOBAIS =====
 let todasPerguntas = [];
