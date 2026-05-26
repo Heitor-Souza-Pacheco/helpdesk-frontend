@@ -30,7 +30,15 @@ fecharPerfil.addEventListener('click', () => {
 });
 
 // ===== VARIÁVEIS GLOBAIS =====
-let todasPerguntas = []; // cache local das perguntas carregadas da API
+let todasPerguntas = [];
+
+// ===== MAPA DE CATEGORIAS =====
+const categoriaMap = {
+    tecnico:    { label: 'Suporte Técnico', cls: 'badge-tecnico' },
+    financeiro: { label: 'Financeiro',       cls: 'badge-financeiro' },
+    rh:         { label: 'RH',               cls: 'badge-rh' },
+    geral:      { label: 'Geral',            cls: 'badge-geral' },
+};
 
 // ===== CARREGAR PERGUNTAS DA API =====
 async function carregarPerguntas() {
@@ -75,11 +83,12 @@ function criarCardElement(pergunta) {
     const article = document.createElement('article');
     article.className = 'card';
     article.dataset.id = pergunta.id;
-    article.dataset.cat = 'geral';
+    article.dataset.cat = pergunta.categoriaPergunta || 'geral';
     article.dataset.status = 'aberta';
 
-    // Gera iniciais do avatar
     const iniciais = emailUsuario.substring(0, 2).toUpperCase();
+    const cat = pergunta.categoriaPergunta || 'geral';
+    const badge = categoriaMap[cat] || { label: cat, cls: 'badge-geral' };
 
     article.innerHTML = `
         <div class="card-header">
@@ -88,7 +97,7 @@ function criarCardElement(pergunta) {
                 <span class="card-author">${emailUsuario}</span>
                 <span class="card-time">Pergunta #${pergunta.id}</span>
             </div>
-            <span class="card-badge badge-geral">Geral</span>
+            <span class="card-badge ${badge.cls}">${badge.label}</span>
         </div>
         <h3 class="card-title">${escapeHtml(pergunta.tituloPergunta)}</h3>
         <p class="card-desc">${escapeHtml(pergunta.corpoPergunta)}</p>
@@ -103,7 +112,8 @@ function criarCardElement(pergunta) {
                 </button>
                 <button class="btn-editar" data-id="${pergunta.id}" 
                     data-titulo="${escapeAttr(pergunta.tituloPergunta)}" 
-                    data-desc="${escapeAttr(pergunta.corpoPergunta)}">
+                    data-desc="${escapeAttr(pergunta.corpoPergunta)}"
+                    data-cat="${escapeAttr(cat)}">
                     &#9998; Editar
                 </button>
                 <button class="btn-excluir" data-id="${pergunta.id}">
@@ -113,7 +123,6 @@ function criarCardElement(pergunta) {
         </div>
     `;
 
-    // Event listeners dos botões
     article.querySelector('.btn-responder').addEventListener('click', abrirModalResponder);
     article.querySelector('.btn-editar').addEventListener('click', abrirModalEditar);
     article.querySelector('.btn-excluir').addEventListener('click', confirmarExclusao);
@@ -148,10 +157,11 @@ fecharNovaPergunta.addEventListener('click', () => {
 
 publicarPergunta.addEventListener('click', async () => {
     const titulo    = document.getElementById('tituloPergunta').value.trim();
+    const categoria = document.getElementById('categoriaPergunta').value;
     const descricao = document.getElementById('descricaoPergunta').value.trim();
 
-    if (!titulo || !descricao) {
-        alert('Preencha o título e a descrição antes de publicar.');
+    if (!titulo || !categoria || !descricao) {
+        alert('Preencha todos os campos antes de publicar.');
         return;
     }
 
@@ -163,15 +173,17 @@ publicarPergunta.addEventListener('click', async () => {
             method: 'POST',
             body: JSON.stringify({
                 tituloPergunta: titulo,
-                corpoPergunta: descricao
+                corpoPergunta: descricao,
+                categoriaPergunta: categoria
             })
         });
 
         if (resposta.ok) {
             document.getElementById('tituloPergunta').value = '';
+            document.getElementById('categoriaPergunta').value = '';
             document.getElementById('descricaoPergunta').value = '';
             modalNovaPergunta.classList.remove('aberto');
-            await carregarPerguntas(); // recarrega a lista
+            await carregarPerguntas();
         } else {
             const msg = await resposta.text();
             alert('Erro ao publicar pergunta: ' + (msg || 'Tente novamente.'));
@@ -196,6 +208,7 @@ function abrirModalEditar(e) {
     perguntaEditandoId = btn.dataset.id;
     document.getElementById('editarTitulo').value = btn.dataset.titulo;
     document.getElementById('editarDescricao').value = btn.dataset.desc;
+    document.getElementById('editarCategoria').value = btn.dataset.cat;
     modalEditar.classList.add('aberto');
 }
 
@@ -206,10 +219,11 @@ fecharEditar.addEventListener('click', () => {
 
 salvarEdicao.addEventListener('click', async () => {
     const titulo    = document.getElementById('editarTitulo').value.trim();
+    const categoria = document.getElementById('editarCategoria').value;
     const descricao = document.getElementById('editarDescricao').value.trim();
 
-    if (!titulo || !descricao) {
-        alert('Preencha o título e a descrição.');
+    if (!titulo || !categoria || !descricao) {
+        alert('Preencha todos os campos.');
         return;
     }
 
@@ -222,7 +236,8 @@ salvarEdicao.addEventListener('click', async () => {
             body: JSON.stringify({
                 id: parseInt(perguntaEditandoId),
                 tituloPergunta: titulo,
-                corpoPergunta: descricao
+                corpoPergunta: descricao,
+                categoriaPergunta: categoria
             })
         });
 
@@ -336,6 +351,22 @@ searchInput.addEventListener('keydown', (e) => {
 });
 searchInput.addEventListener('input', filtrarPorBusca);
 
+// ===== FILTROS DE CATEGORIA (SIDEBAR) =====
+document.querySelectorAll('.category-item').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        const cat = item.dataset.cat;
+        if (cat === 'todas') {
+            renderizarCards(todasPerguntas);
+        } else {
+            const filtradas = todasPerguntas.filter(p => p.categoriaPergunta === cat);
+            renderizarCards(filtradas);
+        }
+    });
+});
+
 // ===== FILTROS DE STATUS =====
 document.querySelectorAll('.filtro-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -359,25 +390,11 @@ document.querySelectorAll('.filtro-btn').forEach(btn => {
     });
 });
 
-// ===== FILTROS DE CATEGORIA (SIDEBAR) =====
-document.querySelectorAll('.category-item').forEach(item => {
-    item.addEventListener('click', () => {
-        document.querySelectorAll('.category-item').forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
-
-        const cat = item.dataset.cat;
-        document.querySelectorAll('.card').forEach(card => {
-            card.style.display = (cat === 'todas' || card.dataset.cat === cat) ? '' : 'none';
-        });
-    });
-});
-
 // ===== ESTATÍSTICAS =====
 function atualizarEstatisticas() {
     const totalPerguntas = document.getElementById('totalPerguntas');
     if (totalPerguntas) totalPerguntas.textContent = todasPerguntas.length;
 
-    // Atualiza sidebar
     const statsNums = document.querySelectorAll('.stats-num');
     if (statsNums.length > 0) statsNums[0].textContent = todasPerguntas.length;
 }
