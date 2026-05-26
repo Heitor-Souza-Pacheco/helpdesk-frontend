@@ -79,6 +79,30 @@ async function carregarMinhasPerguntas() {
 // ===== VARIÁVEIS GLOBAIS =====
 let todasPerguntas = [];
 
+// ===== TOAST / POPUP =====
+function mostrarToast(mensagem, tipo = 'sucesso') {
+    // Remove toast anterior se existir
+    const existente = document.querySelector('.toast-popup');
+    if (existente) existente.remove();
+
+    const toast = document.createElement('div');
+    toast.className = `toast-popup toast-${tipo}`;
+    toast.innerHTML = `
+        <span class="toast-icon">${tipo === 'sucesso' ? '&#10004;' : '&#9888;'}</span>
+        <span class="toast-msg">${mensagem}</span>
+    `;
+    document.body.appendChild(toast);
+
+    // Anima entrada
+    setTimeout(() => toast.classList.add('toast-visivel'), 10);
+
+    // Remove após 3 segundos
+    setTimeout(() => {
+        toast.classList.remove('toast-visivel');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 // ===== MAPA DE CATEGORIAS =====
 const categoriaMap = {
     tecnico:    { label: 'Suporte Técnico', cls: 'badge-tecnico' },
@@ -394,12 +418,12 @@ enviarResposta.addEventListener('click', async () => {
             modalResponder.classList.remove('aberto');
             perguntaRespondendoId = null;
             await carregarPerguntas();
-            alert('Resposta enviada com sucesso!');
+            mostrarToast('Resposta enviada com sucesso!');
         } else {
-            alert('Erro ao enviar resposta. Tente novamente.');
+            mostrarToast('Erro ao enviar resposta. Tente novamente.', 'erro');
         }
     } catch (e) {
-        alert('Não foi possível conectar à API.');
+        mostrarToast('Não foi possível conectar à API.', 'erro');
     } finally {
         enviarResposta.disabled = false;
         enviarResposta.textContent = 'Enviar Resposta';
@@ -450,10 +474,16 @@ async function abrirModalVerRespostas(e) {
                         const btnCurtir = ev.currentTarget;
                         btnCurtir.disabled = true;
                         try {
-                            const curtirResp = await fetchAutenticado(`/resposta/curtir/${r.id}`, { method: 'PUT' });
+                            const curtirResp = await fetch(`${API_BASE_URL}/resposta/curtir/${r.id}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Authorization': `Bearer ${getToken()}`
+                                }
+                            });
                             if (curtirResp.ok) {
                                 const atualizada = await curtirResp.json();
                                 div.querySelector('.resposta-curtidas').textContent = `👍 ${atualizada.curtidas}`;
+                                btnCurtir.textContent = `👍 Curtido (${atualizada.curtidas})`;
                             }
                         } catch (err) {
                             console.error('Erro ao curtir:', err);

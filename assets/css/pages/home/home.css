@@ -940,6 +940,45 @@ body {
     transform: scale(1.1);
 }
 
+/* ===== TOAST POPUP ===== */
+.toast-popup {
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: linear-gradient(to right, rgba(2, 0, 36, 1), rgba(9, 9, 121, 1));
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    z-index: 9999;
+    box-shadow: 0 8px 30px rgba(9, 9, 121, 0.4);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.toast-popup.toast-visivel {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast-erro {
+    background: linear-gradient(to right, #dc2626, #991b1b);
+    box-shadow: 0 8px 30px rgba(220, 38, 38, 0.4);
+}
+
+.toast-icon {
+    font-size: 1.2rem;
+}
+
+.toast-msg {
+    font-weight: 500;
+}
+
 /* ===== RESPONSIVO ===== */
 @media (max-width: 768px) {
     .main-content {
