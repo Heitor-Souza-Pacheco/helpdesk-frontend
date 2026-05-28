@@ -632,10 +632,16 @@ async function enviarMensagem() {
     adicionarMensagem('Digitando...', 'bot-loading');
 
     try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
+
         const resposta = await fetchAutenticado('/ia/perguntar', {
             method: 'POST',
-            body: JSON.stringify({ pergunta: texto })
+            body: JSON.stringify({ pergunta: texto }),
+            signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         // Remove o indicador de "Digitando..."
         removerMensagemLoading();
