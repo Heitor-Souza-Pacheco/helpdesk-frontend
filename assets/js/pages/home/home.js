@@ -609,15 +609,6 @@ const chatbotSend     = document.getElementById('chatbotSend');
 const chatbotMessages = document.getElementById('chatbotMessages');
 const chatbotBadge    = document.getElementById('chatbotBadge');
 
-const respostasBot = [
-    'Entendi sua dúvida! Vou verificar isso para você.',
-    'Essa é uma boa pergunta. Você pode tentar acessar Configurações > Suporte para mais detalhes.',
-    'Para esse tipo de problema, recomendo abrir um chamado com a equipe técnica.',
-    'Posso te ajudar com isso! Qual sistema você está usando?',
-    'Tente limpar o cache do navegador e tentar novamente. Isso resolve a maioria dos problemas.',
-    'Vou encaminhar sua dúvida para um especialista. Aguarde um momento.',
-];
-
 chatbotToggle.addEventListener('click', () => {
     const aberto = chatbotWindow.classList.toggle('aberto');
     chatbotBadge.classList.add('hidden');
@@ -628,29 +619,69 @@ fecharChatbot.addEventListener('click', () => {
     chatbotWindow.classList.remove('aberto');
 });
 
-function enviarMensagem() {
+async function enviarMensagem() {
     const texto = chatbotInput.value.trim();
     if (!texto) return;
 
     adicionarMensagem(texto, 'user');
     chatbotInput.value = '';
 
-    setTimeout(() => {
-        const resposta = respostasBot[Math.floor(Math.random() * respostasBot.length)];
-        adicionarMensagem(resposta, 'bot');
-    }, 800);
+    // Desabilita input enquanto aguarda resposta da IA
+    chatbotInput.disabled = true;
+    chatbotSend.disabled = true;
+    adicionarMensagem('Digitando...', 'bot-loading');
+
+    try {
+        const resposta = await fetchAutenticado('/ia/perguntar', {
+            method: 'POST',
+            body: JSON.stringify({ pergunta: texto })
+        });
+
+        // Remove o indicador de "Digitando..."
+        removerMensagemLoading();
+
+        if (resposta.ok) {
+            const dados = await resposta.json();
+            adicionarMensagem(dados.resposta, 'bot');
+        } else if (resposta.status === 401 || resposta.status === 403) {
+            adicionarMensagem('Sua sessão expirou. Faça login novamente.', 'bot');
+        } else {
+            adicionarMensagem('Desculpe, ocorreu um erro ao processar sua pergunta. Tente novamente.', 'bot');
+        }
+    } catch (e) {
+        removerMensagemLoading();
+        adicionarMensagem('Não foi possível conectar ao servidor. Verifique sua conexão.', 'bot');
+    } finally {
+        chatbotInput.disabled = false;
+        chatbotSend.disabled = false;
+        chatbotInput.focus();
+    }
+}
+
+function removerMensagemLoading() {
+    const loading = chatbotMessages.querySelector('.bot-loading');
+    if (loading) loading.remove();
 }
 
 function adicionarMensagem(texto, tipo) {
     const div = document.createElement('div');
-    div.className = `msg ${tipo === 'bot' ? 'bot-msg' : 'user-msg'}`;
 
-    if (tipo === 'bot') {
+    if (tipo === 'bot-loading') {
+        div.className = 'msg bot-msg bot-loading';
+        div.innerHTML = `
+            <span class="msg-avatar">&#129302;</span>
+            <div class="msg-bubble typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+        `;
+    } else if (tipo === 'bot') {
+        div.className = 'msg bot-msg';
         div.innerHTML = `
             <span class="msg-avatar">&#129302;</span>
             <div class="msg-bubble">${texto}</div>
         `;
     } else {
+        div.className = 'msg user-msg';
         div.innerHTML = `<div class="msg-bubble">${texto}</div>`;
     }
 
