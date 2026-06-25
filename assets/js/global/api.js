@@ -1,5 +1,5 @@
 // ===== CONFIGURAÇÃO CENTRAL DA API =====
-const API_BASE_URL = 'http://localhost:8083';
+const API_BASE_URL = 'https://helpdesk-api-frc3.onrender.com';
 
 /**
  * Salva o token JWT no sessionStorage
