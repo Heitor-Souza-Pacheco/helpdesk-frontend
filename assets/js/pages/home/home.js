@@ -382,6 +382,8 @@ salvarEdicao.addEventListener('click', async () => {
             perguntaEditandoId = null;
             await carregarPerguntas();
             mostrarToast('Pergunta editada com sucesso!');
+        } else if (resposta.status === 403) {
+            mostrarToast('Você não tem permissão para editar esta pergunta.', 'erro');
         } else {
             mostrarToast('Erro ao editar pergunta. Tente novamente.', 'erro');
         }
