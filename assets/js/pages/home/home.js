@@ -418,6 +418,10 @@ async function confirmarExclusao(e) {
         if (resposta.ok) {
             mostrarToast('Pergunta excluída com sucesso!');
             await carregarPerguntas();
+        } else if (resposta.status === 403) {
+            mostrarToast('Você não tem permissão para excluir esta pergunta.', 'erro');
+            btn.disabled = false;
+            btn.textContent = '🗑 Excluir';
         } else {
             mostrarToast('Erro ao excluir pergunta. Tente novamente.', 'erro');
             btn.disabled = false;
