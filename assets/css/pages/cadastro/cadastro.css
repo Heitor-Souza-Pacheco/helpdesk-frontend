@@ -106,7 +106,6 @@ body {
 
 .linkCadastro a:hover {
     text-decoration: underline;
-<<<<<<< HEAD
 }
 
 /* ===== MENSAGENS DE FEEDBACK ===== */
@@ -137,6 +136,56 @@ body {
     cursor: not-allowed;
     transform: none;
 }
-=======
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 768px) {
+    body {
+        background: linear-gradient(to bottom, rgb(27, 2, 75) 0%, rgb(27, 2, 75) 40%, #ffffff 40%);
+        height: auto;
+        min-height: 100vh;
+        padding: 1rem;
+    }
+
+    .container {
+        flex-direction: column;
+        background: #fff;
+        padding: 2rem 1.5rem;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .ladoEsquerdo {
+        display: none;
+    }
+
+    .ladoDireito {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .inputEntrada {
+        width: 100%;
+    }
+
+    .submit {
+        width: 100%;
+        padding: 0.7rem 1rem;
+    }
+
+    .alterarVisivel {
+        margin-left: 0;
+        margin-top: 0.5rem;
+    }
 }
->>>>>>> ad3d079548373b0c8540beec98fa999abbec4e17
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1.5rem 1rem;
+    }
+
+    .descricao {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+}
