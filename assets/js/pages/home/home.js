@@ -103,6 +103,52 @@ function mostrarToast(mensagem, tipo = 'sucesso') {
     }, 3000);
 }
 
+// ===== MODAL DE CONFIRMAÇÃO CUSTOMIZADO =====
+function mostrarConfirmacao(titulo, mensagem, textoBotao = 'Confirmar', tipo = 'danger') {
+    return new Promise((resolve) => {
+        // Remove existente se houver
+        const existente = document.querySelector('.confirm-overlay');
+        if (existente) existente.remove();
+
+        const overlay = document.createElement('div');
+        overlay.className = 'confirm-overlay aberto';
+
+        const icone = tipo === 'danger' ? '&#9888;' : '&#10067;';
+        const btnClass = tipo === 'danger' ? 'confirm-btn-danger' : 'confirm-btn-primary';
+
+        overlay.innerHTML = `
+            <div class="confirm-box">
+                <div class="confirm-icon">${icone}</div>
+                <h3 class="confirm-title">${titulo}</h3>
+                <p class="confirm-message">${mensagem}</p>
+                <div class="confirm-actions">
+                    <button class="confirm-btn confirm-btn-cancel" id="confirmCancelar">Cancelar</button>
+                    <button class="confirm-btn ${btnClass}" id="confirmOk">${textoBotao}</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        overlay.querySelector('#confirmOk').addEventListener('click', () => {
+            overlay.remove();
+            resolve(true);
+        });
+
+        overlay.querySelector('#confirmCancelar').addEventListener('click', () => {
+            overlay.remove();
+            resolve(false);
+        });
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                overlay.remove();
+                resolve(false);
+            }
+        });
+    });
+}
+
 // ===== MAPA DE CATEGORIAS =====
 const categoriaMap = {
     tecnico:    { label: 'Suporte Técnico', cls: 'badge-tecnico' },
@@ -250,7 +296,7 @@ publicarPergunta.addEventListener('click', async () => {
     const descricao = document.getElementById('descricaoPergunta').value.trim();
 
     if (!titulo || !categoria || !descricao) {
-        alert('Preencha todos os campos antes de publicar.');
+        mostrarToast('Preencha todos os campos antes de publicar.', 'erro');
         return;
     }
 
@@ -273,12 +319,13 @@ publicarPergunta.addEventListener('click', async () => {
             document.getElementById('descricaoPergunta').value = '';
             modalNovaPergunta.classList.remove('aberto');
             await carregarPerguntas();
+            mostrarToast('Pergunta publicada com sucesso!');
         } else {
             const msg = await resposta.text();
-            alert('Erro ao publicar pergunta: ' + (msg || 'Tente novamente.'));
+            mostrarToast('Erro ao publicar pergunta: ' + (msg || 'Tente novamente.'), 'erro');
         }
     } catch (e) {
-        alert('Não foi possível conectar à API. Verifique se o servidor está rodando.');
+        mostrarToast('Não foi possível conectar à API.', 'erro');
     } finally {
         publicarPergunta.disabled = false;
         publicarPergunta.textContent = 'Publicar Pergunta';
@@ -312,7 +359,7 @@ salvarEdicao.addEventListener('click', async () => {
     const descricao = document.getElementById('editarDescricao').value.trim();
 
     if (!titulo || !categoria || !descricao) {
-        alert('Preencha todos os campos.');
+        mostrarToast('Preencha todos os campos.', 'erro');
         return;
     }
 
@@ -334,11 +381,12 @@ salvarEdicao.addEventListener('click', async () => {
             modalEditar.classList.remove('aberto');
             perguntaEditandoId = null;
             await carregarPerguntas();
+            mostrarToast('Pergunta editada com sucesso!');
         } else {
-            alert('Erro ao editar pergunta. Tente novamente.');
+            mostrarToast('Erro ao editar pergunta. Tente novamente.', 'erro');
         }
     } catch (e) {
-        alert('Não foi possível conectar à API.');
+        mostrarToast('Não foi possível conectar à API.', 'erro');
     } finally {
         salvarEdicao.disabled = false;
         salvarEdicao.textContent = 'Salvar Alterações';
@@ -350,7 +398,14 @@ async function confirmarExclusao(e) {
     const btn = e.currentTarget;
     const id = btn.dataset.id;
 
-    if (!confirm('Tem certeza que deseja excluir esta pergunta?')) return;
+    const confirmado = await mostrarConfirmacao(
+        'Excluir pergunta',
+        'Tem certeza que deseja excluir esta pergunta? Esta ação não pode ser desfeita.',
+        'Excluir',
+        'danger'
+    );
+
+    if (!confirmado) return;
 
     btn.disabled = true;
     btn.textContent = 'Excluindo...';
@@ -399,7 +454,7 @@ fecharResponder.addEventListener('click', () => {
 enviarResposta.addEventListener('click', async () => {
     const texto = document.getElementById('textoResposta').value.trim();
     if (!texto) {
-        alert('Escreva sua resposta antes de enviar.');
+        mostrarToast('Escreva sua resposta antes de enviar.', 'erro');
         return;
     }
 
@@ -618,6 +673,22 @@ chatbotToggle.addEventListener('click', () => {
 fecharChatbot.addEventListener('click', () => {
     chatbotWindow.classList.remove('aberto');
 });
+
+// Ajusta tamanho do chatbot quando teclado virtual abre no mobile
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+        if (chatbotWindow.classList.contains('aberto')) {
+            const vh = window.visualViewport.height;
+            chatbotWindow.style.maxHeight = (vh * 0.6) + 'px';
+        }
+    });
+    window.visualViewport.addEventListener('scroll', () => {
+        if (chatbotWindow.classList.contains('aberto')) {
+            const vh = window.visualViewport.height;
+            chatbotWindow.style.maxHeight = (vh * 0.6) + 'px';
+        }
+    });
+}
 
 async function enviarMensagem() {
     const texto = chatbotInput.value.trim();
